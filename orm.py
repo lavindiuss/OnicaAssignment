@@ -41,7 +41,7 @@ book_details for : tuple contains particular book data
 """
 
 
-def UserBooksView(book_id=None):
+def UserBooksView(book_id=None,is_edit=False):
     list_of_ids_and_titles = database_cursor.execute(
         "SELECT id,title FROM Book"
     ).fetchall()
@@ -49,8 +49,15 @@ def UserBooksView(book_id=None):
         book_details = database_cursor.execute(
             "SELECT * FROM Book WHERE id = {}".format(book_id)
         ).fetchone()
-        return book_details
-    return list_of_ids_and_titles
+        if not is_edit:
+            print("ID:{}\n Title:{} \n Author:{} \n Description:{}".format(book_details[0],book_details[1],book_details[2],book_details[3]))
+        else:
+            return book_details
+    else:
+            
+        for book in list_of_ids_and_titles:
+            #TODO
+            print("[{}] {}".format(book[0],book[1]))
 
 
 # this function takes the id of a book and partial update its attributes
@@ -93,4 +100,9 @@ def SearchForBook(keyword=None):
     result = database_cursor.execute(
         "SELECT * FROM Book WHERE title like '%{}%'".format(keyword)
     ).fetchall()
-    return result
+    print("The following books matched your query. Enter the book ID to see more details, or <Enter> to return.")
+    for book in result:
+        print("[{}] {} ".format(book[0],book[1]))
+
+
+UserBooksView(2)
